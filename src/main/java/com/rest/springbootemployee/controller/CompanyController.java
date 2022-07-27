@@ -18,39 +18,39 @@ public class CompanyController {
     }
 
     @GetMapping
-    public List<Company> getAllCompanies(){
+    public List<Company> getAllCompanies() {
         return companyRepository.findAllCompanies();
     }
 
     @GetMapping("/{id}")
-    public Company getCompanyById(@PathVariable Integer id){
+    public Company getCompanyById(@PathVariable Integer id) {
         return companyRepository.findCompanyById(id);
     }
 
     @GetMapping("/{id}/employees")
-    public List<Employee> getCompanyAllEmployeesByCompanyId(@PathVariable Integer id){
+    public List<Employee> getCompanyAllEmployeesByCompanyId(@PathVariable Integer id) {
         return companyRepository.findCompanyAllEmployeesByCompanyId(id);
     }
 
-    @GetMapping(params = {"page","pageSize"})
-    public List<Company> getCompaniesByPageAndPageSize(@RequestParam Integer page,@RequestParam Integer pageSize){
-        return companyRepository.findCompaniesByPageAndPageSize(page,pageSize);
+    @GetMapping(params = {"page", "pageSize"})
+    public List<Company> getCompaniesByPageAndPageSize(@RequestParam Integer page, @RequestParam Integer pageSize) {
+        return companyRepository.findCompaniesByPageAndPageSize(page, pageSize);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Boolean saveCompany(@RequestBody Company company){
+    public Boolean saveCompany(@RequestBody Company company) {
         return companyRepository.save(company);
     }
 
     @PutMapping("/{id}")
-    public Boolean updateCompanyById(@PathVariable Integer id,@RequestBody List<Employee> employees){
-        return companyRepository.update(id,employees);
+    public Boolean updateCompanyById(@PathVariable Integer id, @RequestBody List<Employee> employees) {
+        return companyRepository.update(id, employees);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Boolean deleteCompanyById(@PathVariable Integer id){
+    public Boolean deleteCompanyById(@PathVariable Integer id) {
         return companyRepository.delete(id);
     }
 }

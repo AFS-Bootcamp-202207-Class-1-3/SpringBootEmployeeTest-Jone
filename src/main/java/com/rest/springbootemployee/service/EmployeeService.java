@@ -19,4 +19,34 @@ public class EmployeeService {
     public Employee update(int id, Employee newEmployee) {
         return employeeRepository.update(id, newEmployee);
     }
+
+    public Employee save(Employee employee) {
+        employee.setId(generateId());
+        return employeeRepository.save(employee);
+    }
+
+    private Integer generateId() {
+        List<Employee> employeeList = employeeRepository.findAllEmployees();
+        Integer maxId = employeeList.stream()
+                .mapToInt(Employee::getId)
+                .max()
+                .orElse(0);
+        return maxId + 1;
+    }
+
+    public Employee findEmployeeById(Integer id) {
+        return employeeRepository.findEmployeeById(id);
+    }
+
+    public List<Employee> findEmployeesByGender(String gender) {
+        return employeeRepository.findEmployeesByGender(gender);
+    }
+
+    public void delete(Integer id) {
+        employeeRepository.delete(id);
+    }
+
+    public List<Employee> findEmployeesByPageAndPageSize(Integer page, Integer pageSize) {
+        return employeeRepository.findEmployeesByPageAndPageSize(page, pageSize);
+    }
 }

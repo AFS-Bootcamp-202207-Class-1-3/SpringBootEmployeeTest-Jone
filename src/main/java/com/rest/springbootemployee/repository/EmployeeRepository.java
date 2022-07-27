@@ -41,17 +41,8 @@ public class EmployeeRepository {
     }
 
     public Employee save(Employee employee) {
-        employee.setId(generateId());
         this.employeeList.add(employee);
         return employee;
-    }
-
-    private Integer generateId() {
-        Integer maxId = employeeList.stream()
-                .mapToInt(Employee::getId)
-                .max()
-                .orElse(0);
-        return maxId + 1;
     }
 
     public Employee update(int id, Employee newEmployee) {
@@ -60,8 +51,8 @@ public class EmployeeRepository {
         return oldEmployee;
     }
 
-    public Boolean delete(Integer id) {
-        return employeeList.remove(this.findEmployeeById(id));
+    public void delete(Integer id) {
+        employeeList.remove(this.findEmployeeById(id));
     }
 
     public List<Employee> findEmployeesByPageAndPageSize(Integer page, Integer pageSize) {
