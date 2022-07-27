@@ -118,4 +118,18 @@ public class CompanyServiceTests {
         assertThat(actualCompanies, hasSize(2));
         assertEquals("oocl", actualCompanies.get(0).getCompanyName());
     }
+
+    @Test
+    void should_return_company_when_find_company_by_company_id() {
+        // given
+        Company company = new Company(1, "oocl", Arrays.asList(new Employee(1, "Cedric", 23, "Male", 100)));
+        doReturn(company).when(companyRepository).findCompanyById(company.getId());
+
+        // when
+        Company actualCompany = companyService.findCompanyById(company.getId());
+
+        //then
+        assertEquals(company, actualCompany);
+    }
+
 }
