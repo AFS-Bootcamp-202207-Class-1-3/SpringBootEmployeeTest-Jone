@@ -101,4 +101,18 @@ class EmployeeControllerTests {
         Exception exception = assertThrows(NotFoundEmployee.class, () -> employeeRepository.findEmployeeById(1));
         assertEquals("Not found employee.", exception.getMessage());
     }
+
+
+    @Test
+    void should_return_none_when_deleteEmployeeById_given_a_Id() throws Exception {
+
+        // given & when
+        employeeRepository.save(new Employee(1, "Lily", 20, "Female", 11000));
+        client.perform(MockMvcRequestBuilders.delete("/employees/1"))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+        // should
+        List<Employee> employees = employeeRepository.findAllEmployees();
+        assertThat(employees, hasSize(0));
+    }
 }
