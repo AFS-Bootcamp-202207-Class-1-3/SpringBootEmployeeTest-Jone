@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Repository
@@ -56,7 +57,7 @@ public class EmployeeRepository {
 
     public Employee update(Integer id, Employee employee) {
         Employee employee1 = employeeList.stream()
-                .filter(employee2 -> employee2.getId() == id)
+                .filter(employee2 -> Objects.equals(employee2.getId(), id))
                 .findFirst()
                 .orElseThrow(NotFoundEmployee::new);
         employee1.update(employee);
