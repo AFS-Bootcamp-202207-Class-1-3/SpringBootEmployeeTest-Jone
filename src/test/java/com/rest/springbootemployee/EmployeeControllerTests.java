@@ -7,25 +7,26 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.exceptions.base.MockitoException;
+import org.mockito.internal.stubbing.answers.AbstractThrowsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @AutoConfigureMockMvc
 @SpringBootTest
-class EmployeeControllerTests {
+public class EmployeeControllerTests{
 
     @Autowired
     MockMvc client;
@@ -97,9 +98,8 @@ class EmployeeControllerTests {
 
     @Test
     void should_return_NotFoundEmployee_exception_when_getEmployeeById_given_unValid_Id() throws Exception {
-        // todo http 应该如何处理异常？
-        Exception exception = assertThrows(NotFoundEmployee.class, () -> employeeRepository.findEmployeeById(1));
-        assertEquals("Not found employee.", exception.getMessage());
+        client.perform(MockMvcRequestBuilders.get("/employees/1"))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
 
@@ -115,4 +115,5 @@ class EmployeeControllerTests {
         List<Employee> employees = employeeRepository.findAllEmployees();
         assertThat(employees, hasSize(0));
     }
+
 }
