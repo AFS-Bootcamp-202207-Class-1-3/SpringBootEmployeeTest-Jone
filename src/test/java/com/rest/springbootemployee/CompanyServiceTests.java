@@ -132,4 +132,23 @@ public class CompanyServiceTests {
         assertEquals(company, actualCompany);
     }
 
+    @Test
+    void should_return_company_employees_when_find_employees_by_company_id() {
+        // given
+        List<Employee> employees = new ArrayList<Employee>() {{
+            add(new Employee(1, "Lily", 18, "female", 3000));
+            add(new Employee(2, "Lily1", 18, "female", 3000));
+            add(new Employee(3, "Lily2", 18, "female", 3000));
+        }};
+        doReturn(employees).when(companyRepository).findCompanyAllEmployeesByCompanyId(1);
+
+        // when
+        List<Employee> actualEmployees = companyService.findCompanyAllEmployeesByCompanyId(1);
+
+        //then
+        assertThat(actualEmployees, hasSize(3));
+        assertEquals("Lily2", actualEmployees.get(2).getName());
+    }
+
+
 }
