@@ -123,4 +123,17 @@ public class EmployeeServiceTests {
 
     }
 
+    @Test
+    void should_return_nothing_when_delete_given_employee_id() {
+        //given
+        Employee employee = new Employee(1, "Cedric", 23, "Male", 100);
+        doReturn(employee).when(employeeRepository).findEmployeeById(employee.getId());
+
+        //when
+        employeeService.delete(employee.getId());
+
+        //then
+        verify(employeeRepository).delete(employee.getId());
+    }
+
 }
