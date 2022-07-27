@@ -6,6 +6,7 @@ import com.rest.springbootemployee.exception.NotFoundException;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,16 +14,11 @@ import java.util.stream.Collectors;
 public class CompanyRepository {
     private List<Company> companyList;
 
-    public CompanyRepository(EmployeeRepository employeeRepository) {
-        companyList = new ArrayList<Company>() {
-            {
-                add(new Company(1, "Spring", employeeRepository.findAllEmployees()));
-                add(new Company(2, "Summer", employeeRepository.findAllEmployees()));
-                add(new Company(3, "Aut", employeeRepository.findAllEmployees()));
-                add(new Company(4, "A", employeeRepository.findAllEmployees()));
-                add(new Company(5, "BBB", employeeRepository.findAllEmployees()));
-            }
-        };
+    public CompanyRepository() {
+        companyList = new ArrayList<Company>() {{
+            add(new Company(1, "oocl", Arrays.asList(new Employee(1, "Jone", 23, "Male", 100))));
+            add(new Company(2, "IQAX", Arrays.asList(new Employee(2, "Marcus", 23, "Male", 100))));
+        }};
     }
 
     public List<Company> findAllCompanies() {
@@ -33,7 +29,7 @@ public class CompanyRepository {
         return companyList.stream()
                 .filter(company -> company.getId().equals(id))
                 .findFirst()
-                .orElseThrow(() -> new NotFoundException(Company.class.getName()));
+                .orElseThrow(()-> new NotFoundException(Company.class.getSimpleName()));
     }
 
     public List<Employee> findCompanyAllEmployeesByCompanyId(Integer id) {
@@ -60,5 +56,9 @@ public class CompanyRepository {
 
     public Boolean delete(Integer id) {
         return companyList.remove(findCompanyById(id));
+    }
+
+    public void clearAll() {
+        companyList.clear();
     }
 }
