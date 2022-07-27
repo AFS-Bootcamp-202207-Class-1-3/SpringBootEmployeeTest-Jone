@@ -1,22 +1,16 @@
 package com.rest.springbootemployee;
 
 import com.rest.springbootemployee.entity.Employee;
-import com.rest.springbootemployee.exception.NotFoundEmployee;
 import com.rest.springbootemployee.repository.EmployeeRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.exceptions.base.MockitoException;
-import org.mockito.internal.stubbing.answers.AbstractThrowsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 
@@ -115,5 +109,28 @@ public class EmployeeControllerTests{
         List<Employee> employees = employeeRepository.findAllEmployees();
         assertThat(employees, hasSize(0));
     }
+
+    @Test
+    void should_return_rightEmployee_when_updateEmployee_given_employee() throws Exception {
+        // given & when
+        employeeRepository.save(new Employee(1, "Lily", 20, "Female", 11000));
+        String employee = "{\n" +
+                "    \"id\": 12,\n" +
+                "    \"name\": \"zs\",\n" +
+                "    \"age\": 20,\n" +
+                "    \"gender\": \"Male\",\n" +
+                "    \"salary\": 10000\n" +
+                "}";
+//        then
+        client.perform(MockMvcRequestBuilders.put("/employees/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(employee))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Lily"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.age").value(20))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.gender").value("Female"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.salary").value(10000));
+    }
+
 
 }
