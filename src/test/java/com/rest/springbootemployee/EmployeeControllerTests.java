@@ -78,6 +78,16 @@ class EmployeeControllerTests {
         assertThat(allEmployees.get(0).getName(), equalTo("zs"));
         assertThat(allEmployees.get(0).getGender(), equalTo("Male"));
         assertThat(allEmployees.get(0).getSalary(), equalTo(10000));
+    }
+    @Test
+    void should_return_rightEmployee_when_getEmployeeById_given_Id() throws Exception {
+        employeeRepository.save(new Employee(1, "Lily", 20, "Female", 11000));
+        client.perform(MockMvcRequestBuilders.get("/employees/1"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Lily"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.age").value(20))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.gender").value("Female"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.salary").value(11000));
 
     }
 }
