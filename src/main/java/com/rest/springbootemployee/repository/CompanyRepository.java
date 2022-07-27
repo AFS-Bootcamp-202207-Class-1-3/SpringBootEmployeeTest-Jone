@@ -31,9 +31,9 @@ public class CompanyRepository {
 
     public Company findCompanyById(Integer id) {
         return companyList.stream()
-                .filter(company -> company.getId() == id)
+                .filter(company -> company.getId().equals(id))
                 .findFirst()
-                .orElseThrow(()-> new NotFoundException(Company.class.getName()));
+                .orElseThrow(() -> new NotFoundException(Company.class.getName()));
     }
 
     public List<Employee> findCompanyAllEmployeesByCompanyId(Integer id) {
@@ -47,22 +47,15 @@ public class CompanyRepository {
                 .collect(Collectors.toList());
     }
 
-    public Integer generateId(){
-        return companyList.stream()
-                .mapToInt(Company::getId)
-                .max()
-                .orElse(0) + 1;
-    }
-
-    public Boolean save(Company company) {
-        company.setId(generateId());
+    public Company save(Company company) {
         companyList.add(company);
-        return true;
+        return company;
     }
 
-    public Boolean update(Integer id,List<Employee> employees) {
-        findCompanyById(id).addEmployees(employees);
-        return true;
+    public Company update(Integer id, Company newCompany) {
+        Company oldCompany = findCompanyById(id);
+        oldCompany.update(newCompany);
+        return oldCompany;
     }
 
     public Boolean delete(Integer id) {
