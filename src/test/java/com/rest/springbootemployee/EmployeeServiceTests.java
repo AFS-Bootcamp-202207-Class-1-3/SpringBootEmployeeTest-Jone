@@ -16,6 +16,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -104,6 +105,22 @@ public class EmployeeServiceTests {
         //then
         assertThat(actualEmployees, hasSize(3));
         assertEquals("Lily2", actualEmployees.get(2).getName());
+    }
+
+    @Test
+    void should_return_added_employee_when_add_given_an_employee() {
+        //given
+        Employee employee = new Employee(1,"Jone", 20, "male", 9000);
+        doCallRealMethod().when(employeeRepository).save(employee);
+
+        //when
+        Employee addedEmployee = employeeService.save(employee);
+
+        //then
+        verify(employeeRepository).save(employee);
+        assertEquals(9000, addedEmployee.getSalary());
+        assertNotNull(addedEmployee.getId());
+
     }
 
 }
