@@ -1,4 +1,4 @@
-package com.rest.springbootemployee;
+package com.rest.springbootemployee.service;
 
 import com.rest.springbootemployee.entity.Employee;
 import com.rest.springbootemployee.repository.EmployeeRepository;
@@ -11,7 +11,12 @@ import java.util.List;
 public class EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
+
     public List<Employee> findAll() {
         return employeeRepository.findAllEmployees();
+    }
+
+    public Employee update(int id, Employee newEmployee) {
+        return employeeRepository.update(id, newEmployee);
     }
 }

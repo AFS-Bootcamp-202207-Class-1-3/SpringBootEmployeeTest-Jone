@@ -93,7 +93,8 @@ public class EmployeeControllerTests{
     @Test
     void should_return_NotFoundEmployee_exception_when_getEmployeeById_given_unValid_Id() throws Exception {
         client.perform(MockMvcRequestBuilders.get("/employees/1"))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Employee Not found!."));
     }
 
 

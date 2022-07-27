@@ -15,6 +15,17 @@ public class Employee {
         this.salary = salary;
     }
 
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", age=" + age +
+                ", gender='" + gender + '\'' +
+                ", salary=" + salary +
+                '}';
+    }
+
     public Integer getId() {
         return id;
     }
