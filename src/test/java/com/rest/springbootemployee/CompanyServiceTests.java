@@ -102,5 +102,20 @@ public class CompanyServiceTests {
 
     }
 
+    @Test
+    void should_return_companies_when_find_companies_by_page_and_page_size() {
+        // given
+        List<Company> companies = new ArrayList<Company>() {{
+            add(new Company(1, "oocl", Arrays.asList(new Employee(1, "Jone", 23, "Male", 100))));
+            add(new Company(2, "hxt", Arrays.asList(new Employee(2, "Marcus", 23, "Male", 100))));
+        }};
+        doReturn(companies).when(companyRepository).findCompaniesByPageAndPageSize(1, 2);
 
+        // when
+        List<Company> actualCompanies = companyService.findCompaniesByPageAndPageSize(1, 2);
+
+        //then
+        assertThat(actualCompanies, hasSize(2));
+        assertEquals("oocl", actualCompanies.get(0).getCompanyName());
+    }
 }
