@@ -13,11 +13,13 @@ import org.mockito.Spy;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
@@ -69,5 +71,17 @@ public class CompanyServiceTests {
         assertThat(updatedEmployee.getCompanyName(), equalTo(newCompany.getCompanyName()));
     }
 
+    @Test
+    void should_return_nothing_when_delete_given_company_id() {
+        //given
+        Company company = new Company(1, "oocl", Arrays.asList(new Employee(1, "Jone", 23, "Male", 100)));
+        doReturn(company).when(companyRepository).findCompanyById(company.getId());
+
+        //when
+        companyService.delete(company.getId());
+
+        //then
+        verify(companyRepository).delete(company.getId());
+    }
 
 }
