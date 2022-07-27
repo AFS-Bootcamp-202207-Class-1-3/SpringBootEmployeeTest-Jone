@@ -70,4 +70,22 @@ public class EmployeeServiceTests {
         assertEquals(employee, actualEmployee);
     }
 
+    @Test
+    void should_return_employees_when_find_employees_by_gender() {
+        // given
+        List<Employee> employees = new ArrayList<Employee>() {{
+            add(new Employee(1, "Lily", 18, "female", 3000));
+            add(new Employee(2, "Lily1", 18, "female", 3000));
+            add(new Employee(3, "Lily2", 18, "female", 3000));
+        }};
+        doReturn(employees).when(employeeRepository).findEmployeesByGender("female");
+
+        // when
+        List<Employee> actualEmployees = employeeService.findEmployeesByGender("female");
+
+        //then
+        assertThat(actualEmployees, hasSize(3));
+        assertEquals("Lily2", actualEmployees.get(2).getName());
+    }
+
 }
