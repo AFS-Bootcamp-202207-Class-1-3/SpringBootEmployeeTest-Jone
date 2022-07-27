@@ -19,6 +19,8 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -83,5 +85,22 @@ public class CompanyServiceTests {
         //then
         verify(companyRepository).delete(company.getId());
     }
+
+    @Test
+    void should_return_added_company_when_add_given_a_company() {
+        //given
+        Company company = new Company(1, "oocl", Arrays.asList(new Employee(1, "jone", 23, "Male", 100)));
+        doCallRealMethod().when(companyRepository).save(company);
+
+        //when
+        Company addedCompany = companyService.save(company);
+
+        //then
+        verify(companyRepository).save(company);
+        assertEquals("oocl", addedCompany.getCompanyName());
+        assertNotNull(addedCompany.getId());
+
+    }
+
 
 }
