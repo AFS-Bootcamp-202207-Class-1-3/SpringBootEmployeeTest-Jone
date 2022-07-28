@@ -15,6 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -68,7 +69,8 @@ public class EmployeeServiceTests {
     void should_return_employee_when_find_employee_by_employee_id() {
         // given
         Employee employee = new Employee(1, "Cedric", 18, "Male", 6000);
-        doReturn(employee).when(employeeRepository).findEmployeeById(employee.getId());
+
+        doReturn(Optional.of(employee)).when(jpaEmployeeRepository).findById(employee.getId());
 
         // when
         Employee actualEmployee = employeeService.findEmployeeById(employee.getId());

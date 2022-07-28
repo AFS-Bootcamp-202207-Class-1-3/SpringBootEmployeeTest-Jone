@@ -1,6 +1,7 @@
 package com.rest.springbootemployee.service;
 
 import com.rest.springbootemployee.entity.Employee;
+import com.rest.springbootemployee.exception.NotFoundException;
 import com.rest.springbootemployee.repository.EmployeeRepository;
 import com.rest.springbootemployee.repository.JpaEmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +49,12 @@ public class EmployeeService {
         return maxId + 1;
     }
 
-    public Employee findEmployeeById(Integer id) {
+    public Employee findEmployeeByIdOld(Integer id) {
         return employeeRepository.findEmployeeById(id);
+    }
+
+    public Employee findEmployeeById(Integer id) {
+        return jpaEmployeeRepository.findById(id).orElseThrow(()-> new NotFoundException(Employee.class.getSimpleName()));
     }
 
     public List<Employee> findEmployeesByGender(String gender) {

@@ -87,8 +87,8 @@ public class EmployeeControllerTests{
 
     @Test
     void should_return_rightEmployee_when_getEmployeeById_given_Id() throws Exception {
-        employeeRepository.save(new Employee(1, "Lily", 20, "Female", 11000));
-        client.perform(MockMvcRequestBuilders.get("/employees/1"))
+        Employee savedEmployee = jpaEmployeeRepository.save(new Employee(1, "Lily", 20, "Female", 11000));
+        client.perform(MockMvcRequestBuilders.get("/employees/{id}", savedEmployee.getId()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Lily"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.age").value(20))
