@@ -2,18 +2,32 @@ package com.rest.springbootemployee.service;
 
 import com.rest.springbootemployee.entity.Employee;
 import com.rest.springbootemployee.repository.EmployeeRepository;
+import com.rest.springbootemployee.repository.JpaEmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class EmployeeService {
+
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    public List<Employee> findAll() {
+    @Autowired
+    private JpaEmployeeRepository jpaEmployeeRepository;
+
+    public EmployeeService() {
+    }
+
+    public List<Employee> findAllOld() {
         return employeeRepository.findAllEmployees();
+    }
+
+    public List<Employee> findAll() {
+        return jpaEmployeeRepository.findAll();
     }
 
     public Employee update(int id, Employee newEmployee) {
@@ -47,6 +61,6 @@ public class EmployeeService {
     }
 
     public List<Employee> findEmployeesByPageAndPageSize(Integer page, Integer pageSize) {
-        return employeeRepository.findEmployeesByPageAndPageSize(page, pageSize);
+        return jpaEmployeeRepository.findAll(PageRequest.of(page, pageSize)).toList();
     }
 }

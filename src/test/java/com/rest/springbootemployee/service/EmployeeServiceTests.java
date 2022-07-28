@@ -1,12 +1,16 @@
-package com.rest.springbootemployee;
+package com.rest.springbootemployee.service;
 
 import com.rest.springbootemployee.entity.Employee;
 import com.rest.springbootemployee.repository.EmployeeRepository;
+import com.rest.springbootemployee.repository.JpaEmployeeRepository;
 import com.rest.springbootemployee.service.EmployeeService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
@@ -24,6 +28,8 @@ import static org.mockito.Mockito.*;
 public class EmployeeServiceTests {
     @Spy
     EmployeeRepository employeeRepository;
+    @Spy
+    JpaEmployeeRepository jpaEmployeeRepository;
     @InjectMocks
     EmployeeService employeeService;
 
@@ -33,7 +39,7 @@ public class EmployeeServiceTests {
         Employee employee = new Employee(1, "Lily", 20, "Female", 11000);
         List<Employee> employees = new ArrayList<>();
         employees.add(employee);
-        doReturn(employees).when(employeeRepository).findAllEmployees();
+        doReturn(employees).when(jpaEmployeeRepository).findAll();
         // when
         List<Employee> actualEmployees = employeeService.findAll();
 
@@ -47,10 +53,10 @@ public class EmployeeServiceTests {
         // given
         Employee oldEmployee = new Employee(1, "Jone", 30, "Male", 11000);
         Employee newEmployee = new Employee(1, "Jone", 30, "Male", 12000);
-//        doReturn(oldEmployee).when(employeeRepository).findEmployeeById(1);
-//        doCallRealMethod().when(employeeRepository).update(1, newEmployee);
-         given(employeeRepository.findEmployeeById(1)).willReturn(oldEmployee);
-         given(employeeRepository.update(1, newEmployee)).willCallRealMethod();
+        doReturn(oldEmployee).when(employeeRepository).findEmployeeById(1);
+        doCallRealMethod().when(employeeRepository).update(1, newEmployee);
+//         given(employeeRepository.findEmployeeById(1)).willReturn(oldEmployee);
+//         given(employeeRepository.update(1, newEmployee)).willCallRealMethod();
         // when
         Employee updatedEmployee = employeeService.update(1, newEmployee);
         // then
@@ -97,7 +103,7 @@ public class EmployeeServiceTests {
             add(new Employee(2, "Lily1", 18, "female", 3000));
             add(new Employee(3, "Lily2", 18, "female", 3000));
         }};
-        doReturn(employees).when(employeeRepository).findEmployeesByPageAndPageSize(1, 3);
+        doReturn(new PageImpl(employees)).when(jpaEmployeeRepository).findAll(PageRequest.of(1, 3));
 
         // when
         List<Employee> actualEmployees = employeeService.findEmployeesByPageAndPageSize(1, 3);

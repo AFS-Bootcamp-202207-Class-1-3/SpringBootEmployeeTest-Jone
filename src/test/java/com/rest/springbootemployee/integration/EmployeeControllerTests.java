@@ -1,13 +1,15 @@
-package com.rest.springbootemployee;
+package com.rest.springbootemployee.integration;
 
 import com.rest.springbootemployee.entity.Employee;
 import com.rest.springbootemployee.repository.EmployeeRepository;
+import com.rest.springbootemployee.repository.JpaEmployeeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -27,16 +29,19 @@ public class EmployeeControllerTests{
     MockMvc client;
     @Autowired
     EmployeeRepository employeeRepository;
+    @Autowired
+    JpaEmployeeRepository jpaEmployeeRepository;
 
     @BeforeEach
     void clearDB() {
         employeeRepository.clearAll();
+        jpaEmployeeRepository.deleteAll();
     }
 
 
     @Test
     void should_return_allEmployees_when_getAllEmployees_given_none() throws Exception {
-        employeeRepository.save(new Employee(1, "Lily", 20, "Female", 11000));
+        jpaEmployeeRepository.save(new Employee(1, "Lily", 20, "Female", 11000));
 
         client.perform(MockMvcRequestBuilders.get("/employees"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -136,18 +141,18 @@ public class EmployeeControllerTests{
 
     @Test
     void should_get_employees_by_page_and_page_size_when_perform_get_given_employees() throws Exception {
-        employeeRepository.save(new Employee(1, "Lily", 29, "female", 9000));
-        employeeRepository.save(new Employee(2, "Jone", 30, "male", 5000));
+        jpaEmployeeRepository.save(new Employee(1, "Lily", 29, "female", 9000));
+        jpaEmployeeRepository.save(new Employee(2, "Jone", 30, "male", 5000));
 
-        client.perform(MockMvcRequestBuilders.get("/employees").param("page", "1").param("pageSize", "5"))
+        client.perform(MockMvcRequestBuilders.get("/employees").param("page", "0").param("pageSize", "5"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.*", hasSize(2)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").isNumber())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Lily"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].age").value(29))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].gender").value("female"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].salary").value(9000))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").isNumber())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("Jone"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].age").value(30))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].gender").value("male"))
