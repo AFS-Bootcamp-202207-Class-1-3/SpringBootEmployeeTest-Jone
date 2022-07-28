@@ -51,19 +51,19 @@ public class EmployeeService {
 
 
     public Employee findEmployeeById(Integer id) {
-        return jpaEmployeeRepository.findById(id).orElseThrow(()-> new NotFoundException(Employee.class.getSimpleName()));
-    }
-
-    public List<Employee> findEmployeesByGenderOld(String gender) {
-        return employeeRepository.findEmployeesByGender(gender);
+        return jpaEmployeeRepository.findById(id).orElseThrow(() -> new NotFoundException(Employee.class.getSimpleName()));
     }
 
     public List<Employee> findEmployeesByGender(String gender) {
         return jpaEmployeeRepository.findByGender(gender);
     }
 
-    public void delete(Integer id) {
+    public void deleteOld(Integer id) {
         employeeRepository.delete(id);
+    }
+
+    public void delete(Integer id) {
+        jpaEmployeeRepository.deleteById(id);
     }
 
     public List<Employee> findEmployeesByPageAndPageSize(Integer page, Integer pageSize) {

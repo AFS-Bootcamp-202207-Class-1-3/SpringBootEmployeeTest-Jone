@@ -135,13 +135,13 @@ public class EmployeeServiceTests {
     void should_return_nothing_when_delete_given_employee_id() {
         //given
         Employee employee = new Employee(1, "Cedric", 23, "Male", 100);
-        doReturn(employee).when(employeeRepository).findEmployeeById(employee.getId());
+        doReturn(Optional.of(employee)).when(jpaEmployeeRepository).findById(employee.getId());
 
         //when
         employeeService.delete(employee.getId());
 
         //then
-        verify(employeeRepository).delete(employee.getId());
+        verify(jpaEmployeeRepository).deleteById(employee.getId());
     }
 
 }

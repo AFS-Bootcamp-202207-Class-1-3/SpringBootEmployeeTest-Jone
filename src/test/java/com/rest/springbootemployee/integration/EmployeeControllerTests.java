@@ -108,12 +108,12 @@ public class EmployeeControllerTests{
     void should_return_none_when_deleteEmployeeById_given_a_Id() throws Exception {
 
         // given & when
-        employeeRepository.save(new Employee(1, "Lily", 20, "Female", 11000));
-        client.perform(MockMvcRequestBuilders.delete("/employees/1"))
+        Employee savedEmployee = jpaEmployeeRepository.save(new Employee(1, "Lily", 20, "Female", 11000));
+        client.perform(MockMvcRequestBuilders.delete("/employees/{id}", savedEmployee.getId()))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         // should
-        List<Employee> employees = employeeRepository.findAllEmployees();
+        List<Employee> employees = jpaEmployeeRepository.findAll();
         assertThat(employees, hasSize(0));
     }
 
