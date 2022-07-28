@@ -4,18 +4,22 @@ import com.rest.springbootemployee.entity.Company;
 import com.rest.springbootemployee.entity.Employee;
 import com.rest.springbootemployee.repository.CompanyRepository;
 import com.rest.springbootemployee.repository.EmployeeRepository;
+import com.rest.springbootemployee.repository.JpaCompanyRepository;
 import com.rest.springbootemployee.service.CompanyService;
 import com.rest.springbootemployee.service.EmployeeService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -24,12 +28,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 public class CompanyServiceTests {
     @Spy
-    CompanyRepository companyRepository;
+    JpaCompanyRepository jpaCompanyRepository;
+
     @InjectMocks
     CompanyService companyService;
 
@@ -43,7 +49,7 @@ public class CompanyServiceTests {
         });
         List<Company> companies = new ArrayList<>();
         companies.add(company);
-        doReturn(companies).when(companyRepository).findAllCompanies();
+        doReturn(companies).when(jpaCompanyRepository).findAll();
         // when
         List<Company> actualCompanies = companyService.findAllCompanies();
 
@@ -65,13 +71,13 @@ public class CompanyServiceTests {
                 add(new Employee(2, "Lily", 20, "Female", 11000));
             }
         });
-        doReturn(oldCompany).when(companyRepository).findCompanyById(1);
-        doCallRealMethod().when(companyRepository).update(1, newCompany);
+        doReturn(Optional.of(oldCompany)).when(jpaCompanyRepository).findById(1);
+        doReturn(oldCompany).when(jpaCompanyRepository).save(oldCompany);
 
         // when
         Company updatedEmployee = companyService.update(1, newCompany);
         // then
-        verify(companyRepository).update(1, newCompany);
+        verify(jpaCompanyRepository).save(oldCompany);
         assertThat(updatedEmployee.getCompanyName(), equalTo(newCompany.getCompanyName()));
     }
 
@@ -79,26 +85,26 @@ public class CompanyServiceTests {
     void should_return_nothing_when_delete_given_company_id() {
         //given
         Company company = new Company(1, "oocl", Arrays.asList(new Employee(1, "Jone", 23, "Male", 100)));
-        doReturn(company).when(companyRepository).findCompanyById(company.getId());
+        doReturn(Optional.of(company)).when(jpaCompanyRepository).findById(company.getId());
 
         //when
         companyService.delete(company.getId());
 
         //then
-        verify(companyRepository).delete(company.getId());
+        verify(jpaCompanyRepository).deleteById(company.getId());
     }
 
     @Test
     void should_return_added_company_when_add_given_a_company() {
         //given
         Company company = new Company(1, "oocl", Arrays.asList(new Employee(1, "jone", 23, "Male", 100)));
-        doCallRealMethod().when(companyRepository).save(company);
+        doReturn(company).when(jpaCompanyRepository).save(company);
 
         //when
         Company addedCompany = companyService.save(company);
 
         //then
-        verify(companyRepository).save(company);
+        verify(jpaCompanyRepository).save(company);
         assertEquals("oocl", addedCompany.getCompanyName());
         assertNotNull(addedCompany.getId());
 
@@ -111,10 +117,10 @@ public class CompanyServiceTests {
             add(new Company(1, "oocl", Arrays.asList(new Employee(1, "Jone", 23, "Male", 100))));
             add(new Company(2, "hxt", Arrays.asList(new Employee(2, "Marcus", 23, "Male", 100))));
         }};
-        doReturn(companies).when(companyRepository).findCompaniesByPageAndPageSize(1, 2);
+        doReturn(new PageImpl(companies)).when(jpaCompanyRepository).findAll(PageRequest.of(0, 2));
 
         // when
-        List<Company> actualCompanies = companyService.findCompaniesByPageAndPageSize(1, 2);
+        List<Company> actualCompanies = companyService.findCompaniesByPageAndPageSize(0, 2);
 
         //then
         assertThat(actualCompanies, hasSize(2));
@@ -125,7 +131,7 @@ public class CompanyServiceTests {
     void should_return_company_when_find_company_by_company_id() {
         // given
         Company company = new Company(1, "oocl", Arrays.asList(new Employee(1, "Jone", 23, "Male", 100)));
-        doReturn(company).when(companyRepository).findCompanyById(company.getId());
+        doReturn(Optional.of(company)).when(jpaCompanyRepository).findById(company.getId());
 
         // when
         Company actualCompany = companyService.findCompanyById(company.getId());
@@ -142,7 +148,8 @@ public class CompanyServiceTests {
             add(new Employee(2, "Lily1", 18, "female", 3000));
             add(new Employee(3, "Lily2", 18, "female", 3000));
         }};
-        doReturn(employees).when(companyRepository).findCompanyAllEmployeesByCompanyId(1);
+        Company company = new Company(1, "oocl", employees);
+        doReturn(Optional.of(company)).when(jpaCompanyRepository).findById(1);
 
         // when
         List<Employee> actualEmployees = companyService.findCompanyAllEmployeesByCompanyId(1);

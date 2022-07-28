@@ -14,6 +14,7 @@ public class Employee {
     private Integer age;
     private String gender;
     private Integer salary;
+    private Integer companyId;
 
     public Employee() {
     }
@@ -24,6 +25,15 @@ public class Employee {
         this.age = age;
         this.gender = gender;
         this.salary = salary;
+    }
+
+    public Employee(Integer id, String name, Integer age, String gender, Integer salary, Integer companyId) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+        this.gender = gender;
+        this.salary = salary;
+        this.companyId = companyId;
     }
 
     @Override

@@ -4,6 +4,8 @@ import com.rest.springbootemployee.entity.Company;
 import com.rest.springbootemployee.entity.Employee;
 import com.rest.springbootemployee.repository.CompanyRepository;
 import com.rest.springbootemployee.repository.EmployeeRepository;
+import com.rest.springbootemployee.repository.JpaCompanyRepository;
+import com.rest.springbootemployee.repository.JpaEmployeeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,13 +34,22 @@ public class CompanyControllerTest {
 
     @Resource
     MockMvc client;
+
     @Autowired
     CompanyRepository companyRepository;
 
+    @Autowired
+    JpaCompanyRepository jpaCompanyRepository;
+
+    @Autowired
+    JpaEmployeeRepository jpaEmployeeRepository;
+
     @BeforeEach
     void initData() {
-        companyRepository.clearAll();
-        companyRepository.save(new Company(1, "oocl", Arrays.asList(new Employee(1, "Jone", 23, "Male", 7000))));
+        jpaCompanyRepository.deleteAll();
+        jpaEmployeeRepository.deleteAll();
+        jpaCompanyRepository.save(new Company(1, "oocl"));
+        jpaEmployeeRepository.save(new Employee(1, "Jone", 23, "Male", 7000, 1));
     }
 
     @Test
@@ -52,7 +63,7 @@ public class CompanyControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].companyName").value("oocl"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].employees", hasSize(1)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].employees[0].id").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].employees[0].id").isNumber())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].employees[0].name").value("Jone"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].employees[0].age").value(23))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].employees[0].gender").value("Male"))
@@ -79,8 +90,9 @@ public class CompanyControllerTest {
     void should_get_companies_by_page_and_page_size_when_perform_get_given_companies() throws Exception {
         //given
         //when & then
-        companyRepository.save(new Company(2, "hxt", Arrays.asList(new Employee(2, "Jon", 23, "Male", 7000))));
-        client.perform(MockMvcRequestBuilders.get("/companies").param("page", "1").param("pageSize", "5"))
+        Company hxtCompany = jpaCompanyRepository.save(new Company(2, "hxt"));
+        jpaEmployeeRepository.save(new Employee(2, "Jon", 23, "Male", 7000, hxtCompany.getId()));
+        client.perform(MockMvcRequestBuilders.get("/companies").param("page", "0").param("pageSize", "5"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.*", hasSize(2)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
@@ -122,7 +134,7 @@ public class CompanyControllerTest {
                 "    \"companyName\": \"Spring\",\n" +
                 "    \"employees\": [\n" +
                 "        {\n" +
-                "            \"id\": 5,\n" +
+                "            \"id\": 1,\n" +
                 "            \"name\": \"Lily\",\n" +
                 "            \"age\": 20,\n" +
                 "            \"gender\": \"Female\",\n" +
@@ -138,7 +150,7 @@ public class CompanyControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(2))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.companyName").value("Spring"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.employees", hasSize(1)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.employees[0].id").value(5))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employees[0].id").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.employees[0].name").value("Lily"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.employees[0].age").value(20))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.employees[0].gender").value("Female"))
@@ -175,7 +187,6 @@ public class CompanyControllerTest {
         client.perform(MockMvcRequestBuilders.delete("/companies/{id}", 1))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
-
 
 
     @Test
