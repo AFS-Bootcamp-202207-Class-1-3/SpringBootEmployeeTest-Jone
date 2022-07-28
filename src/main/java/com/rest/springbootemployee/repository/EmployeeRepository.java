@@ -15,7 +15,7 @@ public class EmployeeRepository {
     public EmployeeRepository() {
         employeeList = new ArrayList<Employee>() {
             {
-                add(new Employee(11, "Lily", 20, "Female", 11000));
+                add(new Employee(1, "Lily", 20, "Female", 11000));
                 add(new Employee(2, "Lily", 20, "Female", 11000));
                 add(new Employee(3, "Lily", 20, "Female", 11000));
                 add(new Employee(4, "Lily", 20, "Female", 11000));

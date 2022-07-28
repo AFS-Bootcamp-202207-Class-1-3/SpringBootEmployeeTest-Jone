@@ -47,10 +47,10 @@ public class EmployeeServiceTests {
         // given
         Employee oldEmployee = new Employee(1, "Jone", 30, "Male", 11000);
         Employee newEmployee = new Employee(1, "Jone", 30, "Male", 12000);
-        doReturn(oldEmployee).when(employeeRepository).findEmployeeById(1);
-        doCallRealMethod().when(employeeRepository).update(1, newEmployee);
-        // given(employeeRepository.findEmployeeById(1)).willReturn(oldEmployee);
-        // given(employeeRepository.update(oldEmployee, newEmployee)).willCallRealMethod();
+//        doReturn(oldEmployee).when(employeeRepository).findEmployeeById(1);
+//        doCallRealMethod().when(employeeRepository).update(1, newEmployee);
+         given(employeeRepository.findEmployeeById(1)).willReturn(oldEmployee);
+         given(employeeRepository.update(1, newEmployee)).willCallRealMethod();
         // when
         Employee updatedEmployee = employeeService.update(1, newEmployee);
         // then

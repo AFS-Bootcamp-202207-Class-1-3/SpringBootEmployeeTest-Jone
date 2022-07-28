@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -22,7 +23,7 @@ import static org.hamcrest.Matchers.hasSize;
 @SpringBootTest
 public class EmployeeControllerTests{
 
-    @Autowired
+    @Resource
     MockMvc client;
     @Autowired
     EmployeeRepository employeeRepository;

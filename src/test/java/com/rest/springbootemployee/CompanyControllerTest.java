@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
 public class CompanyControllerTest {
 
-    @Autowired
+    @Resource
     MockMvc client;
     @Autowired
     CompanyRepository companyRepository;
@@ -171,10 +172,20 @@ public class CompanyControllerTest {
     public void should_delete_a_company_when_perform_delete_given_id() throws Exception {
         client.perform(MockMvcRequestBuilders.delete("/companies/{id}", 1))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
 
-        client.perform(MockMvcRequestBuilders.get("/companies/{id}", 1))
+
+
+    @Test
+    void should_return_no_found_when_find_company_given_no_exist_companyId() throws Exception {
+        // given
+
+        // when
+        client.perform(MockMvcRequestBuilders.get("/companies/{id}", 2))
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Company Not found!."));
+
+        // then
     }
 }
 
