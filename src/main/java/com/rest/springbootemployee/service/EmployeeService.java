@@ -49,16 +49,17 @@ public class EmployeeService {
         return maxId + 1;
     }
 
-    public Employee findEmployeeByIdOld(Integer id) {
-        return employeeRepository.findEmployeeById(id);
-    }
 
     public Employee findEmployeeById(Integer id) {
         return jpaEmployeeRepository.findById(id).orElseThrow(()-> new NotFoundException(Employee.class.getSimpleName()));
     }
 
-    public List<Employee> findEmployeesByGender(String gender) {
+    public List<Employee> findEmployeesByGenderOld(String gender) {
         return employeeRepository.findEmployeesByGender(gender);
+    }
+
+    public List<Employee> findEmployeesByGender(String gender) {
+        return jpaEmployeeRepository.findByGender(gender);
     }
 
     public void delete(Integer id) {

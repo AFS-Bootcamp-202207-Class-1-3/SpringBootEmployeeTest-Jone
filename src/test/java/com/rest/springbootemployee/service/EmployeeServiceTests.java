@@ -87,7 +87,7 @@ public class EmployeeServiceTests {
             add(new Employee(2, "Lily1", 18, "female", 3000));
             add(new Employee(3, "Lily2", 18, "female", 3000));
         }};
-        doReturn(employees).when(employeeRepository).findEmployeesByGender("female");
+        doReturn(employees).when(jpaEmployeeRepository).findByGender("female");
 
         // when
         List<Employee> actualEmployees = employeeService.findEmployeesByGender("female");
