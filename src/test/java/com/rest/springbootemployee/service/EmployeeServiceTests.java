@@ -68,7 +68,7 @@ public class EmployeeServiceTests {
     @Test
     void should_return_employee_when_find_employee_by_employee_id() {
         // given
-        Employee employee = new Employee(1, "Cedric", 18, "Male", 6000);
+        Employee employee = new Employee(1, "Jone", 18, "Male", 6000);
 
         doReturn(Optional.of(employee)).when(jpaEmployeeRepository).findById(employee.getId());
 
@@ -119,13 +119,13 @@ public class EmployeeServiceTests {
     void should_return_added_employee_when_add_given_an_employee() {
         //given
         Employee employee = new Employee(1,"Jone", 20, "male", 9000);
-        doCallRealMethod().when(employeeRepository).save(employee);
+        doReturn(employee).when(jpaEmployeeRepository).save(employee);
 
         //when
         Employee addedEmployee = employeeService.save(employee);
 
         //then
-        verify(employeeRepository).save(employee);
+        verify(jpaEmployeeRepository).save(employee);
         assertEquals(9000, addedEmployee.getSalary());
         assertNotNull(addedEmployee.getId());
 
@@ -134,7 +134,7 @@ public class EmployeeServiceTests {
     @Test
     void should_return_nothing_when_delete_given_employee_id() {
         //given
-        Employee employee = new Employee(1, "Cedric", 23, "Male", 100);
+        Employee employee = new Employee(1, "Jone", 23, "Male", 100);
         doReturn(Optional.of(employee)).when(jpaEmployeeRepository).findById(employee.getId());
 
         //when

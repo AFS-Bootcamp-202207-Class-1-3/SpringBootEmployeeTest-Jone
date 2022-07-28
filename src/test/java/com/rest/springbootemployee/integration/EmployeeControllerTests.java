@@ -77,7 +77,7 @@ public class EmployeeControllerTests{
                 .andExpect(MockMvcResultMatchers.jsonPath("$.salary").value(10000));
 
         // should
-        List<Employee> allEmployees = employeeRepository.findAllEmployees();
+        List<Employee> allEmployees = jpaEmployeeRepository.findAll();
         assertThat(allEmployees, hasSize(1));
         assertThat(allEmployees.get(0).getAge(), equalTo(20));
         assertThat(allEmployees.get(0).getName(), equalTo("zs"));

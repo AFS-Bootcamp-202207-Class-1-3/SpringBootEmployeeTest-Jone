@@ -123,7 +123,7 @@ public class CompanyServiceTests {
     @Test
     void should_return_company_when_find_company_by_company_id() {
         // given
-        Company company = new Company(1, "oocl", Arrays.asList(new Employee(1, "Cedric", 23, "Male", 100)));
+        Company company = new Company(1, "oocl", Arrays.asList(new Employee(1, "Jone", 23, "Male", 100)));
         doReturn(company).when(companyRepository).findCompanyById(company.getId());
 
         // when

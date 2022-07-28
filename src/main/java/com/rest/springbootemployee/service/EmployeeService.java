@@ -23,10 +23,6 @@ public class EmployeeService {
     public EmployeeService() {
     }
 
-    public List<Employee> findAllOld() {
-        return employeeRepository.findAllEmployees();
-    }
-
     public List<Employee> findAll() {
         return jpaEmployeeRepository.findAll();
     }
@@ -36,19 +32,8 @@ public class EmployeeService {
     }
 
     public Employee save(Employee employee) {
-        employee.setId(generateId());
-        return employeeRepository.save(employee);
+        return jpaEmployeeRepository.save(employee);
     }
-
-    private Integer generateId() {
-        List<Employee> employeeList = employeeRepository.findAllEmployees();
-        Integer maxId = employeeList.stream()
-                .mapToInt(Employee::getId)
-                .max()
-                .orElse(0);
-        return maxId + 1;
-    }
-
 
     public Employee findEmployeeById(Integer id) {
         return jpaEmployeeRepository.findById(id).orElseThrow(() -> new NotFoundException(Employee.class.getSimpleName()));
@@ -56,10 +41,6 @@ public class EmployeeService {
 
     public List<Employee> findEmployeesByGender(String gender) {
         return jpaEmployeeRepository.findByGender(gender);
-    }
-
-    public void deleteOld(Integer id) {
-        employeeRepository.delete(id);
     }
 
     public void delete(Integer id) {
