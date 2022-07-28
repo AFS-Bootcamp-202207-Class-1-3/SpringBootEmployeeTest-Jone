@@ -26,9 +26,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
+@ActiveProfiles("test")
 public class EmployeeServiceTests {
-    @Spy
-    EmployeeRepository employeeRepository;
     @Spy
     JpaEmployeeRepository jpaEmployeeRepository;
     @InjectMocks
@@ -52,16 +51,17 @@ public class EmployeeServiceTests {
     @Test
     void should_return_updatedEmployee_when_update_given_employee() {
         // given
+        int newSalary = 12000;
         Employee oldEmployee = new Employee(1, "Jone", 30, "Male", 11000);
-        Employee newEmployee = new Employee(1, "Jone", 30, "Male", 12000);
-        doReturn(oldEmployee).when(employeeRepository).findEmployeeById(1);
-        doCallRealMethod().when(employeeRepository).update(1, newEmployee);
-//         given(employeeRepository.findEmployeeById(1)).willReturn(oldEmployee);
-//         given(employeeRepository.update(1, newEmployee)).willCallRealMethod();
+        Employee newEmployee = new Employee(1, "Jone", 30, "Male", newSalary);
+        doReturn(Optional.of(oldEmployee)).when(jpaEmployeeRepository).findById(1);
+        doReturn(oldEmployee).when(jpaEmployeeRepository).save(oldEmployee);
+
+
         // when
         Employee updatedEmployee = employeeService.update(1, newEmployee);
         // then
-        verify(employeeRepository).update(1, newEmployee);
+        verify(jpaEmployeeRepository).save(oldEmployee);
         assertThat(updatedEmployee.getSalary(), equalTo(newEmployee.getSalary()));
     }
 

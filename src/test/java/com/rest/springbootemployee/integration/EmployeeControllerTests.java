@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.hasSize;
 
 @AutoConfigureMockMvc
 @SpringBootTest
+@ActiveProfiles("test")
 public class EmployeeControllerTests{
 
     @Resource
@@ -120,7 +121,7 @@ public class EmployeeControllerTests{
     @Test
     void should_return_rightEmployee_when_updateEmployee_given_employee() throws Exception {
         // given & when
-        employeeRepository.save(new Employee(1, "Lily", 20, "Female", 11000));
+        Employee savedEmployee = jpaEmployeeRepository.save(new Employee(1, "Lily", 20, "Female", 11000));
         String employee = "{\n" +
                 "    \"id\": 12,\n" +
                 "    \"name\": \"zs\",\n" +
@@ -129,7 +130,7 @@ public class EmployeeControllerTests{
                 "    \"salary\": 10000\n" +
                 "}";
         //  then
-        client.perform(MockMvcRequestBuilders.put("/employees/1")
+        client.perform(MockMvcRequestBuilders.put("/employees/{id}", savedEmployee.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(employee))
                 .andExpect(MockMvcResultMatchers.status().isOk())

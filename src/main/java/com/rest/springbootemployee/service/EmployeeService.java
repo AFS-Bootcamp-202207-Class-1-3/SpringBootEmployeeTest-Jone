@@ -9,15 +9,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EmployeeService {
 
-    @Autowired
-    private EmployeeRepository employeeRepository;
-
-    @Autowired
+    @Resource
     private JpaEmployeeRepository jpaEmployeeRepository;
 
     public EmployeeService() {
@@ -28,7 +27,9 @@ public class EmployeeService {
     }
 
     public Employee update(int id, Employee newEmployee) {
-        return employeeRepository.update(id, newEmployee);
+        Employee oldEmployee = findEmployeeById(id);
+        oldEmployee.update(newEmployee);
+        return jpaEmployeeRepository.save(oldEmployee);
     }
 
     public Employee save(Employee employee) {
