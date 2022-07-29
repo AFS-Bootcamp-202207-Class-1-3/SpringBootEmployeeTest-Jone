@@ -48,14 +48,14 @@ public class CompanyControllerTest {
     void initData() {
         jpaCompanyRepository.deleteAll();
         jpaEmployeeRepository.deleteAll();
-        jpaCompanyRepository.save(new Company(1, "oocl"));
-        jpaEmployeeRepository.save(new Employee(1, "Jone", 23, "Male", 7000, 1));
+        Company company = jpaCompanyRepository.save(new Company(1, "oocl"));
+        jpaEmployeeRepository.save(new Employee(1, "Jone", 23, "Male", 7000, company.getId()));
     }
 
     @Test
     void should_get_all_companies_when_perform_get_given_companies() throws Exception {
         //given
-
+        System.out.println(1);
         //when & then
         client.perform(MockMvcRequestBuilders.get("/companies"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -73,6 +73,7 @@ public class CompanyControllerTest {
     @Test
     void should_get_company_when_perform_given_company_id() throws Exception {
         //given
+        System.out.println(2);
         //when & then
         client.perform(MockMvcRequestBuilders.get("/companies/{id}", 1))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -88,6 +89,7 @@ public class CompanyControllerTest {
 
     @Test
     void should_get_companies_by_page_and_page_size_when_perform_get_given_companies() throws Exception {
+        System.out.println(3);
         //given
         //when & then
         Company hxtCompany = jpaCompanyRepository.save(new Company(2, "hxt"));
@@ -117,6 +119,7 @@ public class CompanyControllerTest {
     void should_get_company_employees_when_perform_given_company_id() throws Exception {
         //given
         //when & then
+        System.out.println(4);
         client.perform(MockMvcRequestBuilders.get("/companies/{id}/employees", 1))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.*", hasSize(1)))
@@ -129,6 +132,7 @@ public class CompanyControllerTest {
 
     @Test
     public void should_add_an_company_when_perform_post_given_an_company() throws Exception {
+        System.out.println(5);
         // given
         String newCompany = "{\n" +
                 "    \"companyName\": \"Spring\",\n" +
@@ -159,6 +163,7 @@ public class CompanyControllerTest {
 
     @Test
     public void should_update_an_employee_when_perform_put_given_an_employee_and_an_id() throws Exception {
+        System.out.println(6);
         // given
         String newCompany = "{\n" +
                 "    \"companyName\": \"SpringBoot\",\n" +
@@ -184,6 +189,7 @@ public class CompanyControllerTest {
 
     @Test
     public void should_delete_a_company_when_perform_delete_given_id() throws Exception {
+        System.out.println(7);
         client.perform(MockMvcRequestBuilders.delete("/companies/{id}", 1))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
